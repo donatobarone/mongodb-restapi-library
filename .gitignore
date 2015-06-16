@@ -8,10 +8,19 @@
 # Java class files
 *.class
 
+# Android classpath
+.classpath
+.project
+
+# Android extra info
+proguard-project.txt
+project.properties
+
 # Generated files
 bin/
 gen/
-
+libs/
+res/
 # Gradle files
 .gradle/
 build/
