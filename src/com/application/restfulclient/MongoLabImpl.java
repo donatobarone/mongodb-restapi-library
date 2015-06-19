@@ -13,11 +13,11 @@ import com.google.gson.JsonParser;
 
 public class MongoLabImpl implements MongoLabInterface{
 
-	public static String TAG = "mymongolab.donato.barone";
+	public static String TAG = "com.application.restfulclient.mongolabimp";
 	private static String baseUrl = "https://api.mongolab.com/api/1/databases";
 	private static String collectionUrl = "collections";
-	private static String apiKey = "BaqHYkFSYkoL0HqQSrkDbXfvAo26NhXp";  
-	
+	private static String mongodblabApiKey = "BaqHYkFSYkoL0HqQSrkDbXfvAo26NhXp";  
+
 	protected static Gson gson;
 	protected JsonParser jsonParser;
 	
@@ -35,8 +35,8 @@ public class MongoLabImpl implements MongoLabInterface{
 		jsonParser = new JsonParser();
 	}
 	
-	private static String getApiKeyParameter(){
-		return "apiKey=" + apiKey;
+	private static String getMongodblabApiKeyParameter(){
+		return "apiKey=" + mongodblabApiKey;
 	}
 	
 	private String getMultipleDocumentsParameter(){
@@ -51,11 +51,12 @@ public class MongoLabImpl implements MongoLabInterface{
 	public JsonArray listDatabases(){
 		MyHttpClient connector = new MyHttpClient();
 		
-		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "?" + getApiKeyParameter(), "GET", null);
+		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "?" + getMongodblabApiKeyParameter(), "GET", null);
 		JsonArray jsonResult = new JsonArray();
 		try {
 			String result = connectTask.get();	
 			jsonResult = gson.fromJson(result, JsonArray.class);
+			Log.d(TAG, result);				
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,13 +72,13 @@ public class MongoLabImpl implements MongoLabInterface{
 	public JsonArray listCollections(String databaseName){
 		MyHttpClient connector = new MyHttpClient();
 		
-		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/" + databaseName + "/" + collectionUrl + "?" + getApiKeyParameter(), "GET", null);
+		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/" + databaseName + "/" + collectionUrl + "?" + getMongodblabApiKeyParameter(), "GET", null);
 		JsonArray jsonResult = new JsonArray();
 		try {
 			String result = connectTask.get();	
 			jsonResult = gson.fromJson(result, JsonArray.class);
 			Log.d(TAG, "Database  " + databaseName);
-				
+			Log.d(TAG, result);								
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -93,14 +94,14 @@ public class MongoLabImpl implements MongoLabInterface{
 	public JsonArray listDocuments(String databaseName, String collectionName){
 		MyHttpClient connector = new MyHttpClient();
 		
-		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/" + databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getApiKeyParameter(), "GET", null);
+		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/" + databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getMongodblabApiKeyParameter(), "GET", null);
 		JsonArray jsonResult = new JsonArray();
 		try {
 			String result = connectTask.get();	
 			jsonResult = gson.fromJson(result, JsonArray.class);
 			Log.d(TAG, "Database  " + databaseName);
 			Log.d(TAG, "Collection  " + collectionName);
-					
+			Log.d(TAG, result);									
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -120,7 +121,7 @@ public class MongoLabImpl implements MongoLabInterface{
 		MyHttpClient connector = new MyHttpClient();
 		JsonObject jsonResult = new JsonObject();
 		
-		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/" + databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getApiKeyParameter(), "POST", documentJson);
+		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/" + databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getMongodblabApiKeyParameter(), "POST", documentJson);
 		
 		try {
 			String result = connectTask.get();	
@@ -145,7 +146,7 @@ public class MongoLabImpl implements MongoLabInterface{
 		MyHttpClient connector = new MyHttpClient();
 		JsonObject jsonResult = new JsonObject();
 		
-		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/" + databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getApiKeyParameter(), "POST", documentsJson);
+		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/" + databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getMongodblabApiKeyParameter(), "POST", documentsJson);
 		
 		try {
 			String result = connectTask.get();	
@@ -168,13 +169,11 @@ public class MongoLabImpl implements MongoLabInterface{
 		JsonObject updateAttribute = new JsonObject();
 		updateAttribute.add("$set", update);
 		String updateAttributeString = gson.toJson(updateAttribute);
-		String url = baseUrl + "/"
-				+ databaseName + "/" + collectionUrl + "/" + collectionName + "/" + mongoId + "?" + getApiKeyParameter();
-		
+	
 		MyHttpClient connector = new MyHttpClient();
 		JsonObject jsonResult = new JsonObject();
 		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/"
-				+ databaseName + "/" + collectionUrl + "/" + collectionName + "/" + mongoId + "?" + getApiKeyParameter(), "PUT", updateAttributeString);
+				+ databaseName + "/" + collectionUrl + "/" + collectionName + "/" + mongoId + "?" + getMongodblabApiKeyParameter(), "PUT", updateAttributeString);
 
 		try {
 			String result = connectTask.get();
@@ -198,12 +197,11 @@ public class MongoLabImpl implements MongoLabInterface{
 		JsonObject updateAttribute = new JsonObject();
 		updateAttribute.add("$set", update);
 		String updateAttributeString = gson.toJson(updateAttribute);
-//		String url = baseUrl + "/"
-//				+ databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getApiKeyParameter() + "&" + getQueryParameter(gson.toJson(query)) + "&" + getMultipleDocumentsParameter();
+
 		MyHttpClient connector = new MyHttpClient();
 		JsonArray jsonResult = new JsonArray();
 		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/"
-				+ databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getApiKeyParameter() + "&" + getQueryParameter(gson.toJson(query)) + "&" + getMultipleDocumentsParameter(), "PUT", updateAttributeString);
+				+ databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getMongodblabApiKeyParameter() + "&" + getQueryParameter(gson.toJson(query)) + "&" + getMultipleDocumentsParameter(), "PUT", updateAttributeString);
 
 		try {
 			String result = connectTask.get();
@@ -222,13 +220,10 @@ public class MongoLabImpl implements MongoLabInterface{
 
 	@Override
 	public JsonObject deleteDocument(String databaseName, String collectionName, String mongoId) {
-//			String url = baseUrl + "/"
-//				+ databaseName + "/" + collectionUrl + "/" + collectionName + "/" + mongoId + "?" + getApiKeyParameter();
-	
 		MyHttpClient connector = new MyHttpClient();
 		JsonObject jsonResult = new JsonObject();
 		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/"
-				+ databaseName + "/" + collectionUrl + "/" + collectionName + "/" + mongoId + "?" + getApiKeyParameter(), "DELETE", "");
+				+ databaseName + "/" + collectionUrl + "/" + collectionName + "/" + mongoId + "?" + getMongodblabApiKeyParameter(), "DELETE", "");
 
 		try {
 			String result = connectTask.get();
@@ -247,12 +242,10 @@ public class MongoLabImpl implements MongoLabInterface{
 	
 	@Override
 	public JsonObject deleteDocuments(String databaseName, String collectionName, JsonObject query) {
-//		String url = baseUrl + "/"
-//				+ databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getApiKeyParameter() + "&" + getQueryParameter(gson.toJson(query)) + "&" + getMultipleDocumentsParameter();
 		MyHttpClient connector = new MyHttpClient();
 		JsonObject jsonResult = new JsonObject();
 		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/"
-				+ databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getApiKeyParameter() + "&" + getQueryParameter(gson.toJson(query)) + "&" + getMultipleDocumentsParameter(), "PUT", "[]");
+				+ databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getMongodblabApiKeyParameter() + "&" + getQueryParameter(gson.toJson(query)) + "&" + getMultipleDocumentsParameter(), "PUT", "[]");
 
 		try {
 			String result = connectTask.get();
@@ -271,16 +264,16 @@ public class MongoLabImpl implements MongoLabInterface{
 
 	@Override
 	public <T> JsonArray queryDocuments(String databaseName, String collectionName, JsonObject query, Class<T> classType) {
-		
 		MyHttpClient connector = new MyHttpClient();
 		JsonArray jsonResult = new JsonArray();
-		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/" + databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getApiKeyParameter() + "&" + getQueryParameter(gson.toJson(query)), "GET", null);
+		AsyncTask<String, String, String> connectTask = connector.execute(baseUrl + "/" + databaseName + "/" + collectionUrl + "/" + collectionName + "?" + getMongodblabApiKeyParameter() + "&" + getQueryParameter(gson.toJson(query)), "GET", null);
 		
 		try {
 			String result = connectTask.get();	
 			jsonResult = gson.fromJson(result, JsonArray.class);
 			Log.d(TAG, "Database  " + databaseName);
 			Log.d(TAG, "Collection  " + collectionName);
+			Log.d(TAG, result);				
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
