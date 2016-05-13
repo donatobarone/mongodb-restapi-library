@@ -1,8 +1,5 @@
 package com.application.restfulclient;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -12,12 +9,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 public class MongoLabImpl implements MongoLabInterface {
 
 	public static String TAG = "com.application.restfulclient.mongolabimp";
 	private static String baseUrl = "https://api.mongolab.com/api/1/databases";
 	private static String collectionUrl = "collections";
-	private static String mongodblabApiKey = "BaqHYkFSYkoL0HqQSrkDbXfvAo26NhXp";
+	private String mongodblabApiKey = "BaqHYkFSYkoL0HqQSrkDbXfvAo26NhXp";
 
 	protected static Gson gson;
 	protected JsonParser jsonParser;
@@ -31,14 +31,26 @@ public class MongoLabImpl implements MongoLabInterface {
 		return mongoLabImpl;
 	}
 
+	public static MongoLabImpl createInstance(String mongodblabApiKey) {
+		if (mongoLabImpl == null) {
+			mongoLabImpl = new MongoLabImpl();
+            mongoLabImpl.setMongodblabApiKeyParameter(mongodblabApiKey);
+		}
+		return mongoLabImpl;
+	}
+
 	private MongoLabImpl() {
 		// Necessary to serialize complex HashMap into the Json
 		gson = new GsonBuilder().enableComplexMapKeySerialization().create();
 		jsonParser = new JsonParser();
 	}
 
-	private static String getMongodblabApiKeyParameter() {
+	private String getMongodblabApiKeyParameter() {
 		return "apiKey=" + mongodblabApiKey;
+	}
+
+	public void setMongodblabApiKeyParameter(String apiKey) {
+		this.mongodblabApiKey = apiKey;
 	}
 
 	private String getMultipleDocumentsParameter() {
